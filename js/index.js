@@ -320,7 +320,6 @@ function estaDisponible(nombre, hora, turnos) {
             estaDisp = false;
         else
             i++;
-
     return estaDisp;
 }
 
