@@ -1,0 +1,670 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    
+}
+/*HEADER */
+.cabecera{
+    background-color: rgb(253, 251, 236);
+    display: flex;
+    flex-direction: column;
+}
+
+
+.lista-navegacion li {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.imagenBotonMenu{
+    margin-left: 5%;
+    margin-bottom: 25%;
+    margin-right: 5%;
+    width: 10%;
+    height: 10%;
+}
+
+
+.logo-img{
+    width: 50%;
+    margin-left: 5%;
+      
+}
+
+.responsive-div{
+    margin-bottom: 5%; 
+}
+
+
+.img-redes{
+    width: 10%;
+    margin-right: 10%;
+    display: flex;
+    justify-content: center;
+    margin-left: 45%;
+    align-items: flex-start;
+}
+.img-redes a{
+    width: 50%;
+    margin: 10px;
+}
+.img-instagram{
+    width: 25px;
+    height: 25px;
+}
+
+.img-facebook{
+    width: 25px;
+    height: 25px;
+}
+
+.menu{
+    width: 100%;
+    background-color: black;
+    display: flex;
+}
+
+ul.lista-navegacion{
+    width: 100%;
+    flex-direction: column;
+    display: none;
+    padding-left: 5%;
+    
+}
+ul.lista-navegacion.mostrar{
+    display: flex;
+    background-color: rgb(253, 251, 236);
+    list-style: none;
+}
+ul.lista-navegacion.mostrar a{
+    color: black;
+}
+ul.lista-navegacion li img{
+    width: 30px;
+    height: 30px;
+}
+.item{
+    list-style-type: none;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    text-decoration: none;
+}
+.item:hover{
+    cursor: pointer;
+    color: rgb(162, 162, 201);
+    
+}
+
+/*FIN HEADER*/
+
+/*FOOTER*/
+
+iframe{
+    margin-top: 2%;
+    margin-bottom: 2%;
+    width:50%; 
+    height:70%
+}
+
+footer{ 
+    margin-top: 1%;
+    width: 100%;
+    border:1px solid black;
+    background-color: rgb(34, 33, 33);
+    display: flex;
+    flex-direction: column;
+}
+.contacto-footer{
+    padding-top: 2%;
+    margin-right: 2%;
+    text-align: center;
+    flex-direction: column;
+}
+.p-footer{
+    color: white;
+    margin-bottom:3%;
+}
+
+
+
+
+.contacto-footer .footer-datos p a{
+    text-decoration: none;
+    color: white;
+    margin: 0 10px;
+}
+
+.p-footer span{
+    padding-top: 10px;
+    margin-bottom: 10px;
+    border-top: #555 1px solid;
+}
+
+
+.p-footer img{
+    width: 20px;
+    height: 20px;
+}
+/*FIN FOOTER*/
+
+/*BODY INDEX*/
+
+#contentNosotros{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.seccionNosotros{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.h1divIndex{
+    width: 100%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-color: black;
+    color: white;
+    font-family:"Merriweather", sans-serif;
+    font-size: 20px;
+    text-align: center;
+}
+.p-historia{
+    margin-top: 5%;
+    text-align: justify;
+    width: 80%;
+    box-shadow: 2px -2px 7px 0px
+}
+.p-historia p{
+    margin-top: 5%;
+    color: #555;
+    font-size: 16px;
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: 400;
+    font-stretch: normal;
+    line-height: 1.42857;
+    font-family: Merriweather, sans-serif;
+    padding-left: 2%;
+    padding-right: 10%;
+}
+.imagenes-local{
+    width: 80%;
+    margin-bottom: 5%;
+    margin-top: 5%;
+}
+.img-peluquero{
+    width: 80%;
+    height: 80%;
+    margin-top: 5%;
+    margin-left: 10%;
+}
+.div2{
+    margin-left: 5%;
+    margin-top: -15%;
+    
+}
+
+.img-peluqueria{
+    width: 50%;
+    height: 50%;
+    box-shadow: 2px 2px 4px;
+}
+
+.div3{
+    margin-left: 50%;
+    margin-top: -20%;
+}
+.img-barberia{
+    width: 90%;
+    height: 90%;
+    box-shadow: -2px -2px 4px;
+}
+/*FIN BODY INDEX*/
+
+/*BODY SERVICIOS*/
+.contentServicios{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.h4Servicio{
+    color: #555;
+    font-size: 16px;
+    line-height: 26px;
+    font-style: italic;
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.listaServicios{
+    text-align: center;
+    margin: 1%;
+
+}
+.listaServicios li article header {
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: bold;
+    font-stretch: normal;
+    font-size: 18px;
+    line-height: 28px;
+    font-family: 'Merriweather', sans-serif;
+}
+.listaServicios p{
+    margin: 1%;
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: 400;
+    font-stretch: normal;
+    font-size: 15px;
+    line-height: 1.42857;
+    font-family: 'Merriweather', sans-serif;
+}
+.listaServicios li{
+    list-style: none;
+    margin-top: 5%;
+    margin-bottom: 20%;
+}
+.img-tintura{
+    height: 200px;
+    width: 265px;
+}
+/*FIN BODY SERVICIOS*/
+
+/*INICIO BODY TURNOS*/
+#idFechaTurno, #idSelectBarbero, #idSelectSucursal{
+    font-family: "Merriweather", sans-serif;
+}
+.busquedaTurno{
+    display: column;
+    grid-template-columns: 1fr 1fr;
+    margin-top:2%;
+    margin-bottom: 1%;
+    text-align: -webkit-center;
+}
+.busquedaTurno section{
+    width: 70%;
+    margin-bottom:3%; 
+    margin-top: 1%;
+}
+.sectionFormulario{
+    display: grid;
+    grid-template-columns: min-content;
+    justify-content: center; 
+}
+
+.sectionFormulario div{
+    margin: 5px 0;
+}
+
+.sectionFormulario input{
+    margin: 10px 0;
+    padding: 5px 5px;
+}
+
+.sectionFormulario h3, #infoConfirmaTurno h3{
+    text-align: center;
+    font-family: "Merriweather",sans-serif;
+}
+
+#infoConfirmaTurno li{
+    margin:8px 0;
+    font-family: sans-serif;
+    padding: 4px 0 ;
+}
+
+.sectionFormulario  div input{
+   background-color: none;
+   border: none;
+   padding: 2px 3px;
+   font-size: 1rem;
+   outline: none;
+   font-family: "Merriweather",sans-serif;
+   border-bottom: 1px solid #555;
+}
+
+
+.sectionFormulario div label{
+    font-family:"Merriweather", sans-serif;
+    font-size: 1em;
+    color: #555;
+    cursor: pointer;
+}
+
+
+
+.turnosh1{
+    color: white;
+    font-family: 'Noto Sans',sans-serif;
+    background-color: black;
+    font-size: medium;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+table{
+    text-align: center;
+    width: 100%;
+    border-collapse:collapse ;
+    font-family: 'Noto Sans',sans-serif;
+    box-shadow: 2px 2px 7px 0px black;
+    cursor: pointer;
+}
+
+tbody tr .celdaDisponible:hover {
+    background-color: #369681;
+    box-shadow: 2px 2px 7px 2px ;
+    color: black ;
+}
+
+.bordesTabla, .bordesTabla thead tr td, .bordesTabla tbody tr td{
+    padding:10px;
+}
+
+.bordesTabla tbody tr td.seleccionada{
+    background-color: rgb(22, 102, 139);
+}
+
+.bordesTabla thead tr td{
+    font-weight: 900;
+}
+
+.celdaReservada{
+    background-color: #555 ;
+}
+
+
+
+#idFormulario{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    display: none;
+   
+}
+
+#idFormulario.desplegar{
+    display: block;
+    display: flex;
+    justify-content: center;
+}
+
+
+.div-Form {
+    width: max-content;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px -5px rgb(0 0 0/ 90%);
+}
+.div-Form section{
+    margin: 15px 15px;
+}
+.div-Form section div{
+    margin: 10px 5px;
+}
+
+.datosNuevoTurno{
+    margin: 5px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    font-family: "Merriweather", sans-serif;
+}
+/*TURNOS ADMINISTRADOR*/
+.oculto{
+    display: none;
+}
+
+.button-sesion{
+    margin: 20px 0;
+    flex-direction: column;
+    text-align: center;
+}
+.button-sesion button{
+    font-family: "Merriweather", sans-serif;
+    padding: 5px 5px;
+
+}
+#idFormularioAdmin{
+    margin: 5px 0px;
+}
+.sectionFormularioAdmin{
+    text-align: center;
+    margin: 30px 0px;
+    font-family: "Merriweather", sans-serif;
+}
+.sectionFormularioAdmin div{
+    margin: 10px 0px;
+}
+.registroTurno{
+    padding: 5px 5px;
+    margin: 0px 5px;
+}
+
+.tablaAdmin{
+    margin: 15px 0 ;
+}
+
+#idTheadTablaAdmin td{
+    color: #fff;
+    padding: 2px 3px;
+    font-weight: bold;
+    background-color: black;
+}
+
+#idTbodyTablaAdmin td{
+    padding: 5px 0px;
+}
+
+.botones-tablas{
+    margin: 10px 5px;
+}
+.botones-tablas button{
+    padding: 5px 5px;
+}
+
+#idFechaTurnoAdmin{
+    font-family: "Merriweather", sans-serif;
+}
+
+
+
+/*CAPTCHA y RESUMEN DEL TURNO*/
+
+.captcha{
+    margin: 5% auto auto;
+    width: 70%;
+}
+
+#idDivCaptcha{
+    text-align: center;
+}
+
+.textoCaptcha{
+    font-size: 2em;
+    font-family: fantasy;
+    letter-spacing: 0.3em;
+    text-shadow: 0.2em 0.2em 0.1em black, 0.12em 0.3em 0.2em rgb(252, 15, 200), 0.09em 0.25em 1em rgb(186, 250, 11);
+}
+
+/*DIV del Inpunt que ingresa el captcha*/
+
+
+.ingresaCaptcha{ 
+    margin-top: 3%;
+    margin-left: 5%;
+    margin-right: 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.divInfoTurno{
+    border-top: 5%;
+    border: 1px solid black;
+    margin: 2% 25%;
+    text-align: center;
+}
+
+.listaReservaTurno{
+    list-style: none;
+}
+.elementoListaReserva{
+    padding-right: 5%;
+}
+li.elementoListaReserva:hover{
+    border: none;
+}
+
+.divBotonSubmit{
+    text-align: center;
+}
+
+.divBotonSubmit input{
+    padding: 5px 5px;
+}
+
+
+/*FIN BODY TURNOS*/
+
+
+
+@media only screen and (min-width: 900px){
+    /*HEADER*/
+    #idBtn-menu{
+        display: none;
+    }
+    .cabecera{
+        background-color: rgb(253, 251, 236);
+        display: flex;
+        flex-direction:row;
+        width: 100%;
+        align-items: center;
+        margin-bottom: -50px;
+        justify-content: space-around;
+    }
+
+    .logo-img{
+        width: 120px;
+        height: 120px;
+    }
+
+    .img-redes{
+        flex-direction: column;
+        margin-left: 0%;
+        padding-bottom: 20px;
+    }
+
+    .menu{ 
+       background-color: rgb(253, 251, 236);
+       padding-left: 40px;
+       
+    }
+    ul.lista-navegacion{
+        display: flex;
+        flex-direction: row;
+        list-style: none;
+    }
+
+    ul.lista-navegacion li:hover{
+        border-top: 2px solid  black;
+    }
+    ul.lista-navegacion a{
+        color: black;
+    }
+    ul.lista-navegacion li{
+        padding-bottom: 10px ;
+        margin:0 50px;
+
+    }
+
+/*FIN HEADER*/
+
+    /*FOOTER*/
+    iframe{
+        margin-top: 2%;
+        margin-bottom: 2%;
+        width:450px; 
+        height:250px;
+    }
+
+    
+.footer-datos{
+    margin-bottom: 2%;
+    display: flex;
+    text-align: center;
+    padding-left:28% ;
+}   
+/*FIN FOOTER*/
+
+    /*BODY INDEX*/
+    #contentNosotros{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 5%;
+        align-items: flex-start;
+    }
+
+    .p-historia{
+        box-shadow: none;
+    }
+
+    .h1divIndex{
+        width: 100%;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        background-color: black;
+        color: white;
+        font-family:"Merriweather", sans-serif;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .imagenes-local{
+        margin-top: 2%;
+        margin-right: 5%;
+        width: 300%;
+    }
+/*FIN BODY INDEX*/
+
+    /*SERVICIOS*/
+    .placa1, .placa2{
+        display: flex;
+    }
+
+    .h4Servicio{
+        margin-bottom: 0;
+        padding-left: 150px;
+        padding-right: 200px;
+    }
+    
+    .listaServicios{
+       flex-direction: column;
+    }
+    .listaServicios li{
+        margin-bottom: 0%;
+    }
+
+    .listaServicios p{
+        padding-left: 50px;
+        padding-right: 50px;
+    }
+/*FIN SERVICIOS*/
+
+    /*TURNOS*/
+    
+/*FIN TURNOS*/
+}
+
