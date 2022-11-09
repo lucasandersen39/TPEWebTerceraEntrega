@@ -115,7 +115,9 @@ async function insertarEnAPI(url, producto, tabla) {
         });
         if (resultado.ok) {
             //imprimir mensaje en el html 
-            console.log("Insertado correctamente"); 
+            console.log("Insertado correctamente");
+            let elem= await resultado.json();
+            return elem;
         }
         else
             console.log("No se pudo insertar");//imprimir mensaje en el html 
@@ -170,14 +172,14 @@ async function cargarContenidoTurnos(url, container) {
         turnos = await obtenerDatos(url, "turno", filtro);
 
         cargarTurnos(turnos, barberos);*/
-        cargarTabla(url,fecha);
+        cargarTabla(url,fecha.value);
     });
     /*
     let filtro = armarFiltro("", "fecha", fecha.value);
     let turnos = await obtenerDatos(url, "turno", filtro);
     cargarTurnos(turnos, barberos);
     */
-    cargarTabla(url,fecha);
+    cargarTabla(url,fecha.value);
     agregarListenerTabla(fecha);
     let formulario = document.querySelector("#idFormulario");
     formulario.addEventListener("submit", validarFormulario);
@@ -185,11 +187,13 @@ async function cargarContenidoTurnos(url, container) {
 
 async function cargarTabla(url, fecha) {
     let barberos = await obtenerDatos(url, "barbero", "");
-    let filtro = armarFiltro("", "fecha", fecha.value);
-    let turnos = [];
-    turnos = await obtenerDatos(url, "turno", filtro);
+    let filtro = armarFiltro("", "fecha", fecha);
+    //let turnos = [];
+    //turnos = await obtenerDatos(url, "turno", filtro);
 
-    cargarTurnos(turnos, barberos);
+    let turnos=obtenerDatos(url, "turno", filtro);
+    turnos.then((data)=>cargarTurnos(data,barberos));
+    //cargarTurnos(turnos, barberos);
 }
 
 function agregarListenerTabla(fecha) {
@@ -460,7 +464,7 @@ function crearTurnoJson(barb, fec, hor, nomCli, apCli, telCli) {
     return nuevoTurno;
 }
 
-async function agendarTurno() {
+function agendarTurno() {
     let bar = document.querySelector("#idReservaBarbero").textContent;
     let fe = armarFecha(document.querySelector("#idReservaFecha").textContent);
     let hor = document.querySelector("#idReservaHora").textContent;
@@ -472,11 +476,11 @@ async function agendarTurno() {
     //listaTurnos.push(nuevoTurno);
     //cargarTurnos(buscarPorFecha(listaTurnos, porFecha.value), barberos);
     const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
-    let res=await insertarEnAPI(url, nuevoTurno, "turno");
+    insertarEnAPI(url, nuevoTurno, "turno");
+    cargarTabla(url,fe);
     console.log("fecha ins "+fe);
     //NO ACTUALIZA LA TABLA
-    if (res)
-        cargarTabla(url,fe);
+    
     mostrarResumenTurno(nuevoTurno);
     cerrarForm();
 }
