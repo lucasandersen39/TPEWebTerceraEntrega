@@ -54,14 +54,11 @@ function cargarContenido(id, url) {
    Cuando obtiene la respuesta la inserta en el main
 */
 async function obtenerContenido(id) {
-    //let body = document.querySelector("#idMainPrincipal");
     try {
         let respuesta = await fetch(`${id}.html`);
         if (respuesta.ok) {
             let contenido = await respuesta.text();
-            //body.innerHTML = contenido;
             return contenido;
-            //cargarHandler(id);
         }
         else
             body.innerHTML = "Error al cargar contenido";
@@ -106,8 +103,8 @@ async function insertarEnAPI(url, producto, tabla) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            //mode: 'cors',
-            // credentials: 'same-origin',
+            mode: 'cors',
+            credentials: 'same-origin',
             body: JSON.stringify(producto)
         });
         if (resultado.ok) {
@@ -148,6 +145,52 @@ async function obtenerDatos(url, tabla, filtro) {
         console.log("Error de conexion");//imprimir mensaje en el html 
     }
 }
+
+async function borrarDato(url, tabla, turno) {
+    try {
+        let resultado = await fetch(url + tabla + "/" + turno.id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors',
+            credentials: 'same-origin',
+            body: JSON.stringify(turno)
+        });
+        if (resultado.ok) {
+            //imprimir mensaje en el html 
+            console.log("Borrado correctamente");
+        }
+        else
+            console.log("No se pudo Borrar");//imprimir mensaje en el html 
+    } catch (error) {
+        //imprimir mensaje en el html 
+        console.log("Error en la conexion")
+    }
+}
+
+async function modificarDatoEnAPI(url, tabla, turno) {
+    try {
+        let resultado = await fetch(url + tabla + "/" + turno.id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors',
+            credentials: 'same-origin',
+            body: JSON.stringify(turno)
+        });
+        if (resultado.ok) {
+            //imprimir mensaje en el html 
+            console.log("Modificado correctamente");
+        }
+        else
+            console.log("No se pudo Modificar");//imprimir mensaje en el html 
+    } catch (error) {
+        //imprimir mensaje en el html 
+        console.log("Error en la conexion")
+    }
+}
 /****************************************************************************************************/
 /*Funcion que muestra u oculta el menu en mobile*/
 function desplegarMenu() {
@@ -158,7 +201,7 @@ function desplegarMenu() {
 async function cargarContenidoTurnos(url) {
     let barberos = await obtenerDatos(url, "barbero", "");
     //Carga en el input del form los barberos disponibles
-    cargarInputBarbero(barberos);
+    //cargarInputBarbero(barberos);
     armarTHead(barberos);
     let fecha = document.querySelector("#idFechaTurno");
     fecha.value = fechaActual();
@@ -351,312 +394,357 @@ function cargarContenidoAdmin(url) {
     let resultado = obtenerDatos(url, "turno", filtro);
     resultado.then((turnos) => {
         cargarTablaAdmin(turnos);
-    })
+    });
 
     let formu = document.querySelector("#idFormularioAdmin");
     formu.addEventListener("submit", function (event) {
         guardarDatosAdmin(event, formu);
         limpiarCampos();
     });
-
-    function guardarDatosAdmin(event, formu) {
-        event.preventDefault();
-        //let formu= document.querySelector("#idFormularioAdmin");
-        let adminData = new FormData(formu);
-        let turno = {
-            "barbero": adminData.get("barbero"),
-            "fecha": adminData.get("fecha"),
-            "hora": adminData.get("Hora"),
-            "cliente": {
-                "nombre": adminData.get("nombre"),
-                "apellido": adminData.get("apellido"),
-                "telefono": adminData.get("numero"),
-            }
-        };
-
-        const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
-        let filtroBusqueda = armarFiltro("", "barbero", turno.barbero);
-        filtroBusqueda = armarFiltro(filtroBusqueda, "fecha", turno.fecha);
-        filtroBusqueda = armarFiltro(filtroBusqueda, "hora", turno.hora);
-        console.log(filtroBusqueda);
-        const turnoExiste = obtenerDatos(url, "turno", filtroBusqueda);
-        turnoExiste.then((turnoRes) => {
-            if (!existeTurno(turnoRes, turno)) {
-                let res = insertarEnAPI(url, turno, "turno");
-                res.then(() => {
-                    let filtro = armarFiltro("", "fecha", turno.fecha);
-                    let resultado = obtenerDatos(url, "turno", filtro);
-                    resultado.then((turnos) => {
-                        cargarTablaAdmin(turnos);
-
-                    });
-                });
-            } else
-                if (event.target.id=="submitModificaTurno"){
-                    let turnoMod=buscarTurno()
-                    //logica de modificar
-                }
-        });
-    }
 }
-    function existeTurno(arreglo, turno) {
-        let existe = false;
-        let i = 0;
-        while ((i < arreglo.length) && (!existe)) {
-            if (arreglo[i].barbero == turno.barbero && arreglo[i].fecha == turno.fecha &&
-                arreglo[i].hora == turno.hora)
-                existe = true;
-            console.log(arreglo[i].barbero);
-            i++;
+function guardarDatosAdmin(event, formu) {
+    event.preventDefault();
+    //let formu= document.querySelector("#idFormularioAdmin");
+    let adminData = new FormData(formu);
+    let turno = {
+        "barbero": adminData.get("barbero"),
+        "fecha": adminData.get("fecha"),
+        "hora": adminData.get("Hora"),
+        "cliente": {
+            "nombre": adminData.get("nombre"),
+            "apellido": adminData.get("apellido"),
+            "telefono": adminData.get("numero"),
         }
-        return existe;
-    }
+    };
 
-    function limpiarCampos() {
-        document.querySelector("#idNombre").value = "";
-        document.querySelector("#idApellido").value = "";
-        document.querySelector("#idTelefono").value = "";
-        document.querySelector("#idSelectHora").value = "10";
-    }
-    /*
-     cargarTabla(url, fecha.value);
-     agregarListenerTabla(fecha);
-     let formulario = document.querySelector("#idFormulario");
-     formulario.addEventListener("submit", validarFormulario);*/
+    const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
+    let filtroBusqueda = armarFiltro("", "barbero", turno.barbero);
+    filtroBusqueda = armarFiltro(filtroBusqueda, "fecha", turno.fecha);
+    filtroBusqueda = armarFiltro(filtroBusqueda, "hora", turno.hora);
+    console.log(filtroBusqueda);
+    let turnoExiste = obtenerDatos(url, "turno", filtroBusqueda);
+    turnoExiste.then((turnoRes) => {
+        console.log(turnoRes);
 
-    function cargarTablaAdmin(turnos) {
-        let bodyAdmin = document.querySelector("#idTbodyTablaAdmin");
-        limpiarTabla(bodyAdmin);
-        for (const elem of turnos) {
-            agregarFilaAdmin(elem,turnos);
-        }
-    }
-
-    function agregarFilaAdmin(turno,arTurnos) {
-        let bodyAdmin = document.querySelector("#idTbodyTablaAdmin");
-        let fila = document.createElement("tr");
-        fila.appendChild(crearColumnaAdmin(turno.cliente.nombre));
-        fila.appendChild(crearColumnaAdmin(turno.cliente.apellido));
-        fila.appendChild(crearColumnaAdmin(turno.cliente.telefono));
-        fila.appendChild(crearColumnaAdmin(turno.barbero));
-        fila.appendChild(crearColumnaAdmin(armarFecha(turno.fecha)));
-        fila.appendChild(crearColumnaAdmin(turno.hora));
-        fila.appendChild(crearBoton("Editar",turno.id,arTurnos));
-        bodyAdmin.appendChild(fila);
-    }
-
-    function crearBoton(texto,id,arTurnos){
-        let boton=document.createElement("button");
-        boton.id=id;
-        boton.textContent=texto;
-        boton.addEventListener("click",function(){
-            editarTurno(boton.id,arTurnos);
-        });
-        return boton;
-    }
-    /**
-     * Esta funcion se encarga de buscar el objeto json al que pertenece el id e ingresarlo en los inputs
-     * del form para que el usuario pueda editarlos.
-     * Ademas oculta el boton de registrar turno y lo intercambia con los botones de modificar, borrar y cancelar
-     * @param {*} id El id del turno que se desea modificar
-     * @param {*} arTurnos Arreglo de objetos json con todos los turnos que tenemos cargados en la tabla
-     */
-    function editarTurno(id,arTurnos){
-        let turno=buscarTurno(id,arTurnos);
-        if (turno!=undefined){
-            document.querySelector("#idNombre").value=turno.cliente.nombre;
-            document.querySelector("#idApellido").value=turno.cliente.apellido;
-            document.querySelector("#idTelefono").value=turno.cliente.telefono;
-            document.querySelector("#idSelectHora").value=turno.hora;
-            document.querySelector("#idSelectBarbero").value=turno.barbero;
-            document.querySelector("#idFechaTurno").value=turno.fecha;
-
-            document.querySelector("#submitRegistraTurno").classList.add("oculto");
-            document.querySelector("#idDivModificar").classList.remove("oculto");;
-
-            console.log("encontro");
-        }
-        else
-            console.log("no encontro nada");
-    }
-
-    function buscarTurno(id,arreglo){
-        for (let i=0;i<arreglo.length;i++)
-            if (arreglo[i].id==id)
-                return arreglo[i];
-        
-        return undefined;
-    }
-
-    function crearColumnaAdmin(dato) {
-        let col = document.createElement("td");
-        col.textContent = dato;
-        return col;
-    }
-
-    /*Captura el evento lanzado por el navegador cuando queremos ir hacia atras o hacia adelante en la navegacion
-      Preguntamos si es distinto de null porque chrome nos lanza un popstate cuando cargamos la pagina
-    */
-    window.addEventListener("popstate", (event) => {
-        const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
-        if (event.state !== null) {
-            let estado = event.state.id;
-            document.title = estado;
-            let res = obtenerContenido(estado);
-            res.then((contenido) => {
-                let body = document.querySelector("#idMainPrincipal");
-                body.innerHTML = contenido;
-                cargarHandler(estado, url)
+        if (!existeTurno(turnoRes, turno)) {
+            let res = insertarEnAPI(url, turno, "turno");
+            res.then(() => {
+                let filtro = armarFiltro("", "fecha", turno.fecha);
+                renderTablaAdmin(url, "turno", filtro);
             });
-            //cargarBody(estado);
-            /* if (estado == "turnos")
-                 cargarContenidoTurnos(url);*/
-        }
-    });
-    /****************************************************************************************************/
-    /*CAPTCHA */
-
-    //La funcion Math.random me genera un numero random entre 0 y 1 sin incluir el 1
-    //Le sumamos 1 para incluir el numero max entre los posibles resultados al aplicarle el floor
-    function numeroAleatorio(min, max) {
-        return Math.floor((Math.random() * (max - min + 1)) + min);
-    }
-
-    //Genera una cadena de texto de tamaño cantLetras
-    //define un arreglo con las letras disponibles
-    //genera un numero aleatorio entre 0 y el tamaño del arreglo usando la funcion numeroAleatorio
-    //va concatenando la cadena con la nueva letra generada
-    function armarPalabra(cantLetras) {
-        let letras = 'abcdefghijklmnopqrstuvwxyz';
-        let cadena = '';
-        for (let i = 1; i <= cantLetras; i++) {
-            let numeroRandomLetras = numeroAleatorio(0, letras.length - 1);
-            let letra = letras.charAt(numeroRandomLetras);
-            cadena = cadena.concat(letra);
-        }
-        return cadena;
-    }
-
-    //Genera un captcha de un tamaño especificado y lo inserta en turnos.html
-    function generarCaptcha() {
-        let textoCaptcha = document.querySelector("#idTextoCaptcha");
-        //recupero la cadena aleatoria
-        let cadena = armarPalabra(5);
-        //Añade la cadena aleatoria al <p>
-        textoCaptcha.innerHTML = cadena;
-    }
-
-    //Crea una lista de forma dinamica con los datos ingresados por el usuario
-    //y lo inserta debajo del form en la pagina de turnos
-    function mostrarResumenTurno(nuevoTurno) {
-        let divInfoTurno = document.querySelector("#infoConfirmaTurno");
-        let nombre = document.querySelector("#idInputNombre");
-        let apellido = document.querySelector("#idInputApellido");
-        let barbero = document.querySelector("#idSelectBarbero");
-        let hora = document.querySelector("#idSelectHora");
-
-        let lista = document.createElement("ul");
-        //se aplica un estilo a la lista que muestra los datos de la reserva con firmada
-        lista.classList.add("listaReservaTurno");
-        let elementoLista = document.createElement("li");
-        elementoLista.classList.add("elementoListaReserva");
-        let info = document.createTextNode("Nombre: " + nuevoTurno.cliente.nombre);
-        elementoLista.appendChild(info);
-        lista.appendChild(elementoLista);
-
-        let elementoLista2 = document.createElement("li");
-        elementoLista2.classList.add("elementoListaReserva");
-        let info2 = document.createTextNode("Apellido: " + nuevoTurno.cliente.apellido);
-        elementoLista2.appendChild(info2);
-        lista.appendChild(elementoLista2);
-
-        let elementoLista3 = document.createElement("li");
-        elementoLista3.classList.add("elementoListaReserva");
-        let info3 = document.createTextNode("Fecha: " + nuevoTurno.fecha + "/  Hora: " + nuevoTurno.hora + "hs");
-        elementoLista3.appendChild(info3);
-        lista.appendChild(elementoLista3);
-
-        let elementoLista4 = document.createElement("li");
-        elementoLista4.classList.add("elementoListaReserva");
-        let info4 = document.createTextNode("Barbero: " + nuevoTurno.barbero);
-        elementoLista4.appendChild(info4);
-        lista.appendChild(elementoLista4);
-
-        let h3 = document.createElement("h3");
-        let encabezado = document.createTextNode("Reserva confirmada");
-        h3.appendChild(encabezado);
-        divInfoTurno.appendChild(h3);
-        divInfoTurno.appendChild(lista);
-        //se aplica un estilo al div que contiene la confirmacion del turno
-        divInfoTurno.classList.add("divInfoTurno");
-    }
-
-    function borrarInfoTurno() {
-        let divInfoTurno = document.querySelector("#infoConfirmaTurno");
-        while (divInfoTurno.firstChild)
-            divInfoTurno.removeChild(divInfoTurno.firstChild);
-    }
-
-    //Imprime en la pagina un mensaje de que el captcha es incorrecto
-    function errorCaptchaIngresado() {
-        let divInfoTurno = document.querySelector("#infoConfirmaTurno");
-        divInfoTurno.classList.add("divInfoTurno");
-        divInfoTurno.innerHTML = "Captcha Incorrecto";
-    }
-
-    function cerrarForm() {
-        document.querySelector("#idInputNombre").value = "";
-        document.querySelector("#idInputApellido").value = "";
-        document.querySelector("#idNumeroTelefono").value = "";
-        document.querySelector("#idInputIngresaCaptcha").value = "";
-        generarCaptcha();
-        let formulario = document.querySelector("#idFormulario");
-        formulario.classList.remove("desplegar");
-    }
-
-    function crearTurnoJson(barb, fec, hor, nomCli, apCli, telCli) {
-        let nuevoTurno = {
-            "barbero": barb,
-            "fecha": fec,
-            "hora": hor,
-            "cliente": {
-                "nombre": nomCli,
-                "apellido": apCli,
-                "telefono": telCli,
-            }
-        };
-        return nuevoTurno;
-    }
-
-    function agendarTurno() {
-        let bar = document.querySelector("#idReservaBarbero").textContent;
-        let fe = armarFecha(document.querySelector("#idReservaFecha").textContent);
-        let hor = document.querySelector("#idReservaHora").textContent;
-        let nCli = document.querySelector("#idInputNombre").value;
-        let apCli = document.querySelector("#idInputApellido").value;
-        let tCli = parseInt(document.querySelector("#idNumeroTelefono").value);
-        let nuevoTurno = crearTurnoJson(bar, fe, hor, nCli, apCli, tCli);
-        const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
-        insertarEnAPI(url, nuevoTurno, "turno");
-        cargarTabla(url, fe)
-        mostrarResumenTurno(nuevoTurno);
-        cerrarForm();
-    }
-
-    //Pregunta si todos los campos requeridos estan completos
-    //Si lo estan, valida que el captcha sea correcto
-    //Si es correco imprime un resumen del turno dado
-    //Si no es correcto avisa que es incorrecto y genera un nuevo captcha
-    function validarFormulario(evento) {
-        let textoCaptcha = document.querySelector("#idTextoCaptcha");
-        let inputIngresaCaptcha = document.querySelector("#idInputIngresaCaptcha");
-
-        evento.preventDefault();
-        if (textoCaptcha.textContent == inputIngresaCaptcha.value) {
-            agendarTurno();
         }
         else {
-            errorCaptchaIngresado();
-            generarCaptcha();
+            if (event.submitter.id == "submitModificaTurno") {
+                turno.id = turnoRes[0].id;
+                console.log("id mod"+turno.id);
+                let res = modificarDatoEnAPI(url, "turno", turno);
+                res.then(() => {
+                    let filtro = armarFiltro("", "fecha", turno.fecha);
+                    renderTablaAdmin(url, "turno", filtro);
+                });
+            }
+
+            else
+                mostrarMensajeRes("EL turno para esa fecha y hora ya existe");
+
         }
+    });
+}
+
+function mostrarMensajeRes(mensaje){
+    document.querySelector("#idMostrarInfoRes").innerHTML=mensaje;
+}
+
+function renderTablaAdmin(url, tabla, filtro) {
+    let resultado = obtenerDatos(url, tabla, filtro);
+    resultado.then((turnos) => {
+        cargarTablaAdmin(turnos);
+    });
+}
+
+function existeTurno(arreglo, turno) {
+    let existe = false;
+    let i = 0;
+    while ((i < arreglo.length) && (!existe)) {
+        if (arreglo[i].barbero == turno.barbero && arreglo[i].fecha == turno.fecha &&
+            arreglo[i].hora == turno.hora)
+            existe = true;
+        console.log(arreglo[i].barbero);
+        i++;
     }
+    return existe;
+}
+
+function limpiarCampos() {
+    document.querySelector("#idNombre").value = "";
+    document.querySelector("#idApellido").value = "";
+    document.querySelector("#idTelefono").value = "";
+    document.querySelector("#idSelectHora").value = "10";
+}
+/*
+ cargarTabla(url, fecha.value);
+ agregarListenerTabla(fecha);
+ let formulario = document.querySelector("#idFormulario");
+ formulario.addEventListener("submit", validarFormulario);*/
+
+function cargarTablaAdmin(turnos) {
+    let bodyAdmin = document.querySelector("#idTbodyTablaAdmin");
+    limpiarTabla(bodyAdmin);
+    for (const elem of turnos) {
+        agregarFilaAdmin(elem, turnos);
+    }
+}
+
+function agregarFilaAdmin(turno, arTurnos) {
+    let bodyAdmin = document.querySelector("#idTbodyTablaAdmin");
+    let fila = document.createElement("tr");
+    fila.appendChild(crearColumnaAdmin(turno.cliente.nombre));
+    fila.appendChild(crearColumnaAdmin(turno.cliente.apellido));
+    fila.appendChild(crearColumnaAdmin(turno.cliente.telefono));
+    fila.appendChild(crearColumnaAdmin(turno.barbero));
+    fila.appendChild(crearColumnaAdmin(armarFecha(turno.fecha)));
+    fila.appendChild(crearColumnaAdmin(turno.hora));
+    fila.appendChild(crearBoton("Editar", turno.id, arTurnos));
+    bodyAdmin.appendChild(fila);
+}
+
+function crearBoton(texto, id, arTurnos) {
+    let boton = document.createElement("button");
+    boton.id = id;
+    boton.textContent = texto;
+    boton.addEventListener("click", function () {
+        editarTurno(boton.id, arTurnos);
+    });
+    return boton;
+}
+/**
+ * Esta funcion se encarga de buscar el objeto json al que pertenece el id e ingresarlo en los inputs
+ * del form para que el usuario pueda editarlos.
+ * Ademas oculta el boton de registrar turno y lo intercambia con los botones de modificar, borrar y cancelar
+ * @param {*} id El id del turno que se desea modificar
+ * @param {*} arTurnos Arreglo de objetos json con todos los turnos que tenemos cargados en la tabla
+ */
+function editarTurno(id, arTurnos) {
+    let turno = buscarTurno(id, arTurnos);
+    if (turno != undefined) {
+        document.querySelector("#idNombre").value = turno.cliente.nombre;
+        document.querySelector("#idApellido").value = turno.cliente.apellido;
+        document.querySelector("#idTelefono").value = turno.cliente.telefono;
+        document.querySelector("#idSelectHora").value = turno.hora;
+        document.querySelector("#idSelectBarbero").value = turno.barbero;
+        document.querySelector("#idFechaTurno").value = turno.fecha;
+
+        document.querySelector("#submitRegistraTurno").classList.add("oculto");
+        document.querySelector("#idDivModificar").classList.remove("oculto");;
+
+        console.log("encontro");
+        let btnCancelar = document.querySelector("#buttonCancelar");
+        btnCancelar.addEventListener("click", cancelarOperacion);
+        let btnBorrar = document.querySelector("#buttonBorrarTurno");
+        btnBorrar.addEventListener("click", function () {
+            borrarTurno(turno);
+        })
+    }
+    else
+        console.log("no encontro nada");
+}
+
+function cancelarOperacion() {
+    limpiarCampos();
+    document.querySelector("#idDivModificar").classList.add("oculto");
+    document.querySelector("#submitRegistraTurno").classList.remove("oculto");
+}
+
+function borrarTurno(turno) {
+    const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
+    console.log("tamaño" + turno.length);
+    let fecha = turno.fecha;
+    console.log("Turno a borrar " + turno);
+    let res = borrarDato(url, "turno", turno);
+    res.then(() => {
+        cancelarOperacion();
+        let filtro = armarFiltro("", "fecha", fecha);
+        renderTablaAdmin(url, "turno", filtro);
+    });
+}
+
+function buscarTurno(id, arreglo) {
+    for (let i = 0; i < arreglo.length; i++)
+        if (arreglo[i].id == id)
+            return arreglo[i];
+
+    return undefined;
+}
+
+function crearColumnaAdmin(dato) {
+    let col = document.createElement("td");
+    col.textContent = dato;
+    return col;
+}
+
+/*Captura el evento lanzado por el navegador cuando queremos ir hacia atras o hacia adelante en la navegacion
+  Preguntamos si es distinto de null porque chrome nos lanza un popstate cuando cargamos la pagina
+*/
+window.addEventListener("popstate", (event) => {
+    const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
+    if (event.state !== null) {
+        let estado = event.state.id;
+        document.title = estado;
+        let res = obtenerContenido(estado);
+        res.then((contenido) => {
+            let body = document.querySelector("#idMainPrincipal");
+            body.innerHTML = contenido;
+            cargarHandler(estado, url)
+        });
+        //cargarBody(estado);
+        /* if (estado == "turnos")
+             cargarContenidoTurnos(url);*/
+    }
+});
+/****************************************************************************************************/
+/*CAPTCHA */
+
+//La funcion Math.random me genera un numero random entre 0 y 1 sin incluir el 1
+//Le sumamos 1 para incluir el numero max entre los posibles resultados al aplicarle el floor
+function numeroAleatorio(min, max) {
+    return Math.floor((Math.random() * (max - min + 1)) + min);
+}
+
+//Genera una cadena de texto de tamaño cantLetras
+//define un arreglo con las letras disponibles
+//genera un numero aleatorio entre 0 y el tamaño del arreglo usando la funcion numeroAleatorio
+//va concatenando la cadena con la nueva letra generada
+function armarPalabra(cantLetras) {
+    let letras = 'abcdefghijklmnopqrstuvwxyz';
+    let cadena = '';
+    for (let i = 1; i <= cantLetras; i++) {
+        let numeroRandomLetras = numeroAleatorio(0, letras.length - 1);
+        let letra = letras.charAt(numeroRandomLetras);
+        cadena = cadena.concat(letra);
+    }
+    return cadena;
+}
+
+//Genera un captcha de un tamaño especificado y lo inserta en turnos.html
+function generarCaptcha() {
+    let textoCaptcha = document.querySelector("#idTextoCaptcha");
+    //recupero la cadena aleatoria
+    let cadena = armarPalabra(5);
+    //Añade la cadena aleatoria al <p>
+    textoCaptcha.innerHTML = cadena;
+}
+
+//Crea una lista de forma dinamica con los datos ingresados por el usuario
+//y lo inserta debajo del form en la pagina de turnos
+function mostrarResumenTurno(nuevoTurno) {
+    let divInfoTurno = document.querySelector("#infoConfirmaTurno");
+    let nombre = document.querySelector("#idInputNombre");
+    let apellido = document.querySelector("#idInputApellido");
+    let barbero = document.querySelector("#idSelectBarbero");
+    let hora = document.querySelector("#idSelectHora");
+
+    let lista = document.createElement("ul");
+    //se aplica un estilo a la lista que muestra los datos de la reserva con firmada
+    lista.classList.add("listaReservaTurno");
+    let elementoLista = document.createElement("li");
+    elementoLista.classList.add("elementoListaReserva");
+    let info = document.createTextNode("Nombre: " + nuevoTurno.cliente.nombre);
+    elementoLista.appendChild(info);
+    lista.appendChild(elementoLista);
+
+    let elementoLista2 = document.createElement("li");
+    elementoLista2.classList.add("elementoListaReserva");
+    let info2 = document.createTextNode("Apellido: " + nuevoTurno.cliente.apellido);
+    elementoLista2.appendChild(info2);
+    lista.appendChild(elementoLista2);
+
+    let elementoLista3 = document.createElement("li");
+    elementoLista3.classList.add("elementoListaReserva");
+    let info3 = document.createTextNode("Fecha: " + nuevoTurno.fecha + "/  Hora: " + nuevoTurno.hora + "hs");
+    elementoLista3.appendChild(info3);
+    lista.appendChild(elementoLista3);
+
+    let elementoLista4 = document.createElement("li");
+    elementoLista4.classList.add("elementoListaReserva");
+    let info4 = document.createTextNode("Barbero: " + nuevoTurno.barbero);
+    elementoLista4.appendChild(info4);
+    lista.appendChild(elementoLista4);
+
+    let h3 = document.createElement("h3");
+    let encabezado = document.createTextNode("Reserva confirmada");
+    h3.appendChild(encabezado);
+    divInfoTurno.appendChild(h3);
+    divInfoTurno.appendChild(lista);
+    //se aplica un estilo al div que contiene la confirmacion del turno
+    divInfoTurno.classList.add("divInfoTurno");
+}
+
+function borrarInfoTurno() {
+    let divInfoTurno = document.querySelector("#infoConfirmaTurno");
+    while (divInfoTurno.firstChild)
+        divInfoTurno.removeChild(divInfoTurno.firstChild);
+}
+
+//Imprime en la pagina un mensaje de que el captcha es incorrecto
+function errorCaptchaIngresado() {
+    let divInfoTurno = document.querySelector("#infoConfirmaTurno");
+    divInfoTurno.classList.add("divInfoTurno");
+    divInfoTurno.innerHTML = "Captcha Incorrecto";
+}
+
+function cerrarForm() {
+    document.querySelector("#idInputNombre").value = "";
+    document.querySelector("#idInputApellido").value = "";
+    document.querySelector("#idNumeroTelefono").value = "";
+    document.querySelector("#idInputIngresaCaptcha").value = "";
+    generarCaptcha();
+    let formulario = document.querySelector("#idFormulario");
+    formulario.classList.remove("desplegar");
+}
+
+function crearTurnoJson(barb, fec, hor, nomCli, apCli, telCli) {
+    let nuevoTurno = {
+        "barbero": barb,
+        "fecha": fec,
+        "hora": hor,
+        "cliente": {
+            "nombre": nomCli,
+            "apellido": apCli,
+            "telefono": telCli,
+        }
+    };
+    return nuevoTurno;
+}
+
+function agendarTurno() {
+    let bar = document.querySelector("#idReservaBarbero").textContent;
+    let fe = armarFecha(document.querySelector("#idReservaFecha").textContent);
+    let hor = document.querySelector("#idReservaHora").textContent;
+    let nCli = document.querySelector("#idInputNombre").value;
+    let apCli = document.querySelector("#idInputApellido").value;
+    let tCli = parseInt(document.querySelector("#idNumeroTelefono").value);
+    let nuevoTurno = crearTurnoJson(bar, fe, hor, nCli, apCli, tCli);
+    const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
+    insertarEnAPI(url, nuevoTurno, "turno");
+    cargarTabla(url, fe)
+    mostrarResumenTurno(nuevoTurno);
+    cerrarForm();
+}
+
+//Pregunta si todos los campos requeridos estan completos
+//Si lo estan, valida que el captcha sea correcto
+//Si es correco imprime un resumen del turno dado
+//Si no es correcto avisa que es incorrecto y genera un nuevo captcha
+function validarFormulario(evento) {
+    let textoCaptcha = document.querySelector("#idTextoCaptcha");
+    let inputIngresaCaptcha = document.querySelector("#idInputIngresaCaptcha");
+
+    evento.preventDefault();
+    if (textoCaptcha.textContent == inputIngresaCaptcha.value) {
+        agendarTurno();
+    }
+    else {
+        errorCaptchaIngresado();
+        generarCaptcha();
+    }
+}
