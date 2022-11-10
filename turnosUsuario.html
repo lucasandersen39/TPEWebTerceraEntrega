@@ -1,0 +1,77 @@
+<article class="principal-turnos" id="idCuerpoUsuario">         
+    <article>
+        <section class="busquedaTurno">
+            <section>
+                <input type="date" name="fecha" id="idFechaTurno">
+            </section>
+            <section>
+                <select name="barbero" id="idSelectBarbero">
+                    <option value="vacio">Seleccione Barbero</option>
+                </select>
+            </section>              
+        </section>
+        <p id="infoEstado"></p>
+        <section class="sectionFormulario">
+            <!--TABLA-->
+            <h1 class="turnosh1">Seleccione un turno disponible</h1>
+            <table class="bordesTabla">
+                <thead id="idTheadTabla">
+
+                </thead>
+                <tbody id="idTbodyTabla">
+
+                </tbody>
+            </table>
+        </section>
+    </article>
+
+    <form action="" id="idFormulario">
+        <section class="div-Form">
+
+            <section class="sectionFormulario">
+
+                <h3>Reserva para: </h3>
+                <div class="datosNuevoTurno">
+                    <p>Barbero:</p>
+                    <p id="idReservaBarbero"></p>
+                    <p>Fecha:</p>
+                    <p id="idReservaFecha"></p>
+                    <p>Hora:</p>
+                    <p id="idReservaHora"></p>
+                </div>
+
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="idInputNombre" name="nombre" value="" required>
+                </div>
+                <div>
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="idInputApellido" name="apellido" value="" required>
+                </div>
+                <div>
+                    <label for="numero">Telefono</label>
+                    <input type="text" id="idNumeroTelefono" name="numero" value="" required
+                        placeholder="">
+                </div>
+            </section>
+            <section class="sectionFormularioCaptcha">
+                <div id="idDivCaptcha" class="captcha">
+                    <p id="idTextoCaptcha" class="textoCaptcha">
+                    </p>
+                </div>
+                <div class="ingresaCaptcha">
+                    <input type="text" name="ingresaCaptcha" id="idInputIngresaCaptcha" required
+                        placeholder="Ingrese el captcha">
+                </div>
+
+                <div class="divBotonSubmit">
+                    <input type="submit" value="Reservar Turno" class="botonSubmit" id="idBotonReserva">
+                </div>
+            </section>
+        </section>
+        
+    </form>
+    <div id="infoConfirmaTurno">
+
+    </div>
+</article>
