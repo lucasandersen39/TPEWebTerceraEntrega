@@ -32,27 +32,56 @@
 
                     </select>
                 </div>
-            
+
                 <section>
                     <input type="date" name="fecha" id="idFechaTurno">
                 </section>
             </section>
             <input class="registroTurno" type="submit" name="Registro" value="Registrar Turno" id="submitRegistraTurno">
             <div class="oculto" id="idDivModificar">
-                <input type="submit" class="registroTurno" name="Modifica" value="Modificar Turno" id="submitModificaTurno">
+                <input type="submit" class="registroTurno" name="Modifica" value="Modificar Turno"
+                    id="submitModificaTurno">
                 <input type="button" class="registroTurno" value="Borrar Turno" id="buttonBorrarTurno">
-                <input type="button" class="registroTurno" value="Cancelar" id="buttonCancelar">
+                <input type="button" class="" value="Cancelar" id="buttonCancelar">
             </div>
         </section>
     </form>
     <div id="idMostrarInfoRes"></div>
     <section>
 
-        <table class="tablaAdmin">
-            <div class="botones-tablas">
-                <button id="idBotonAzar">Generar al Azar</button>
-                <button id="idBotonLimpiarAdmin">Borrar Datos</button>
+
+        <div class="botones-tablas">
+            <button id="idBotonAzar">Generar al Azar</button>
+            <button id="idBotonLimpiarAdmin">Limpiar tabla</button>
+        </div>
+        <p>Filtrar resultados</p>
+        <div class="botones-tabla divFiltrado">  
+            <select name="barbero" id="idSelectBarberoFiltro">
+                <option value="vacio">Seleccione Barbero</option>
+            </select>
+            <select name="Hora" id="idSelectHoraFiltro">
+                <option value="vacio">Seleccione hora</option>
+                <option value="10">10hs</option>
+                <option value="11">11hs</option>
+                <option value="12">12hs</option>
+                <option value="13">13hs</option>
+                <option value="14">14hs</option>
+                <option value="15">15hs</option>
+                <option value="16">16hs</option>
+                <option value="17">17hs</option>
+                <option value="18">18hs</option>
+            </select>
+            <div>
+                <label for="nombre">Nombre</label>
+                <input type="text" name="nombre" id="idNombreFiltro" value="" required>
             </div>
+            <div>
+                <label for="apellido">Apellido</label>
+                <input type="text" name="apellido" id="idApellidoFiltro" value="" required>
+            </div>
+            <button id="idFiltrarResultados">Filtrar</button>
+        </div>
+        <table class="tablaAdmin">
             <thead id="idTheadTablaAdmin">
                 <tr>
                     <td>Nombre</td>
