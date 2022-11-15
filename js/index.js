@@ -908,5 +908,5 @@ document.addEventListener("DOMContentLoaded", function () {
             generarCaptcha();
         }
     }
-
+    
 });
