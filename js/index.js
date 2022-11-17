@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
             body.innerHTML = "Error al conectar con el servidor";
         }
     }
+
     function cargarHandler(id, url) {
         if (id == "turnos") {
             cargarContenidoTurnos(url);
