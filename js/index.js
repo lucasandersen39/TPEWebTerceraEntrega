@@ -3,8 +3,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     cargarPagina();
     const url = "https://6363774237f2167d6f7a2269.mockapi.io/";
-    let arregloTurnos;
+    let arregloTurnos = [];
     let idTurno;
+    let pagina = 1;
+    let cantPorHoja = 5;
     /* Carga las funciones iniciales, cuando el index es cargado.
        Al entrar al sitio se carga la pagina home por defecto y se le asignan los eventos
        a cada uno de los links de la barra de navegacion del header */
@@ -81,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             });
             document.querySelector("#button-admin").addEventListener("click", function () {
+                cantPorHoja=5;
                 let id = "turnosAdmin";
                 let res = obtenerContenido(id);
                 res.then((contenido) => {
@@ -255,8 +258,8 @@ document.addEventListener("DOMContentLoaded", function () {
             divInfoTurno.removeChild(divInfoTurno.firstChild);
     }
 
-    function cargarInputBarbero(barberos,select) {
-        
+    function cargarInputBarbero(barberos, select) {
+
         for (const elem of barberos) {
             let opcion = document.createElement("option");
             opcion.value = elem.nombre;
@@ -272,6 +275,9 @@ document.addEventListener("DOMContentLoaded", function () {
             cadena = cadena + "&" + parametro + "=" + `${valor}`;
 
         return cadena;
+        //?barbero=Nicolas
+        //?barbero=Nicolas&page=1
+        //?barbero=Nicolas&page=1&limit=5
     }
 
     /**
@@ -362,12 +368,13 @@ document.addEventListener("DOMContentLoaded", function () {
     /****************************************************************************************************/
     function cargarContenidoAdmin(url) {
         let res = obtenerDatos(url, "barbero", "");
+        pagina = 1;
         //Carga en el input del form los barberos disponibles
         res.then((barberos) => {
             let select = document.querySelector("#idSelectBarbero");
-            cargarInputBarbero(barberos,select);
+            cargarInputBarbero(barberos, select);
             let select2 = document.querySelector("#idSelectBarberoFiltro");
-            cargarInputBarbero(barberos,select2);
+            cargarInputBarbero(barberos, select2);
         });
 
         let fecha = document.querySelector("#idFechaTurno");
@@ -375,16 +382,30 @@ document.addEventListener("DOMContentLoaded", function () {
         fecha.min = fechaActual();
         fecha.addEventListener("change", function () {
             let filtro = armarFiltro("", "fecha", fecha.value);
-            renderTablaAdmin(url, "turno", filtro);
+            renderTablaAdmin(url, "turno", filtro, 1);
         });
 
         let filtro = armarFiltro("", "fecha", fecha.value);
-        let resultado = obtenerDatos(url, "turno", filtro);
-        resultado.then((turnos) => {
-            cargarTablaAdmin(turnos);
-            arregloTurnos = turnos;
-        });
+       
+        renderTablaAdmin(url, "turno", filtro, 1).then((turnos) => {
+            let btnSig = document.querySelector("#idBtnSiguiente");
 
+            arregloTurnos = turnos;
+            console.log(arregloTurnos.length);
+            if (arregloTurnos.length >= cantPorHoja) {
+                btnSig.disabled = false;
+                btnSig.addEventListener("click", paginado);
+                let btnAnterior = document.querySelector("#idBtnAnterior");
+                btnAnterior.addEventListener("click", paginado);
+            }
+        });
+        let selectCant = document.querySelector("#idCantHojas");
+        selectCant.addEventListener("change", () => {
+            cantPorHoja = selectCant.value;
+            renderTablaAdmin(url, "turno", filtro, 1).then((turnos) => {
+                arregloTurnos = turnos;
+            });
+        })
         let formu = document.querySelector("#idFormularioAdmin");
         formu.addEventListener("submit", function (event) {
             if (event.submitter.id == "submitRegistraTurno") {
@@ -405,6 +426,32 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector("#idFiltrarResultados").addEventListener("click",filtrarResultados);
     }
 
+    function paginado(event) {
+        let fecha = document.querySelector("#idFechaTurno");
+        let filtro = armarFiltro("", "fecha", fecha.value);
+        let btnAnt = document.querySelector("#idBtnAnterior");
+        let btnSig = document.querySelector("#idBtnSiguiente");
+
+        if (event.target.id == "idBtnSiguiente") {
+            btnAnt.disabled = false;
+            pagina++;
+            renderTablaAdmin(url, "turno", filtro, pagina).then((turnos) => {
+                arregloTurnos = turnos;
+                if (arregloTurnos.length < 5)
+                    btnSig.disabled = true;
+            });
+        } else
+            if (event.target.id == "idBtnAnterior") {
+                btnSig.disabled = false;
+                pagina--;
+                renderTablaAdmin(url, "turno", filtro, pagina).then((turnos) => {
+                    arregloTurnos = turnos;
+                    if (pagina < 2)
+                        btnAnt.disabled = true;
+                });
+            }
+    }
+
     function guardarDatosAdmin(event, formu) {
         event.preventDefault();
         let adminData = new FormData(formu);
@@ -423,11 +470,13 @@ document.addEventListener("DOMContentLoaded", function () {
         filtroBusqueda = armarFiltro(filtroBusqueda, "hora", turno.hora);
         let turnoExiste = obtenerDatos(url, "turno", filtroBusqueda);
         turnoExiste.then((turnoRes) => {
-            if (existeTurno(turnoRes, turno)==-1) {
+            if (existeTurno(turnoRes, turno) == -1) {
                 let res = insertarEnAPI(url, turno, "turno");
                 res.then(() => {
                     let filtro = armarFiltro("", "fecha", turno.fecha);
-                    renderTablaAdmin(url, "turno", filtro);
+                    renderTablaAdmin(url, "turno", filtro, 1).then((turnos) => {
+                        arregloTurnos = turnos;
+                    });
                 });
             }
             else
@@ -436,7 +485,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function agregarTurnosRandom() {
-        obtenerDatos(url, "barbero", "").then((barberos) => {
+        obtenerDatos(url, "barbero", "").then(async (barberos) => {
             let cant = 0;
             let clientes = [{
                 "nombre": "Roberto",
@@ -457,23 +506,33 @@ document.addEventListener("DOMContentLoaded", function () {
             let fecha = document.querySelector("#idFechaTurno").value;
             let turnosDisp = [];
             let barb = 0;
-            let turnosAux=arregloTurnos;
+            //let turnosAux = arregloTurnos;
+            let filtro = armarFiltro("", "fecha", fecha);
+            let turnosAux = await obtenerDatos(url, "turno", filtro);
+
             while (cant < 3 && barb < barberos.length) {
-                let turnoDisp = buscarTurnoDisponible(barberos[barb],fecha, clientes[cant],turnosAux);
+                let turnoDisp = buscarTurnoDisponible(barberos[barb], fecha, clientes[cant], turnosAux);
                 if (turnoDisp != undefined) {
                     turnosDisp.push(turnoDisp);
                     turnosAux.push(turnoDisp);
                     cant++;
                 }
-                else    
+                else
                     barb++;
             }
-            if (turnosDisp.length==3){
-                insertarEnAPI(url,turnosDisp[0],"turno").then(()=>{
-                    insertarEnAPI(url,turnosDisp[1],"turno").then(()=>{
-                        insertarEnAPI(url,turnosDisp[2],"turno").then(()=>{
+            if (turnosDisp.length == 3) {
+                insertarEnAPI(url, turnosDisp[0], "turno").then(() => {
+                    insertarEnAPI(url, turnosDisp[1], "turno").then(() => {
+                        insertarEnAPI(url, turnosDisp[2], "turno").then(() => {
                             let filtro = armarFiltro("", "fecha", fecha);
-                            renderTablaAdmin(url, "turno", filtro);
+                            renderTablaAdmin(url, "turno", filtro, pagina).then((turnos) => {
+                                arregloTurnos = turnos;
+                                let btnSig = document.querySelector("#idBtnSiguiente");
+                                if (arregloTurnos.length < 5)
+                                    btnSig.disabled = true;
+                                else
+                                    btnSig.disabled = false;
+                            });
                         })
                     })
                 })
@@ -483,13 +542,13 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function buscarTurnoDisponible(barbero,fecha, cliente,turnosAux) {
+    function buscarTurnoDisponible(barbero, fecha, cliente, turnosAux) {
         let hora = 10;
         let valido = false;
         let turno = undefined;
         while (hora < 19 && !valido) {
             let t1 = armarObjetoTurno(barbero.nombre, fecha, hora, cliente.nombre, cliente.apellido, cliente.telefono);
-            if (existeTurno(turnosAux, t1)==-1) {
+            if (existeTurno(turnosAux, t1) == -1) {
                 turno = t1;
                 valido = true;
             }
@@ -515,32 +574,38 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelector("#idMostrarInfoRes").innerHTML = mensaje;
     }
 
-    function renderTablaAdmin(url, tabla, filtro) {
-        let resultado = obtenerDatos(url, tabla, filtro);
-        resultado.then((turnos) => {
-            arregloTurnos=turnos;
-            cargarTablaAdmin(turnos);
-        });
+    async function renderTablaAdmin(url, tabla, filtro, pag) {
+        let filtroAux = filtro;
+        filtroAux = armarFiltro(filtroAux, "page", pag);
+        filtroAux = armarFiltro(filtroAux, "limit", cantPorHoja);
+        try {
+            let resultado = await obtenerDatos(url, tabla, filtroAux);
+            cargarTablaAdmin(resultado);
+            return resultado;
+
+        }
+        catch (error) {
+            console.log("No se pudo cargar la pagina")
+        }
     }
 
-    function filtrarResultados(){
+    function filtrarResultados() {
         let fecha = document.querySelector("#idFechaTurno");
-        let barbero=document.querySelector("#idSelectBarberoFiltro");
-        let hora=document.querySelector("#idSelectHoraFiltro");
-        let nombreCli=document.querySelector("#idNombreFiltro");
-        let apCli=document.querySelector("#idApellidoFiltro");
-        let resultado=arregloTurnos;
-        console.log(fecha.value);
-        resultado=buscarPorFecha(resultado,fecha.value);
+        let barbero = document.querySelector("#idSelectBarberoFiltro");
+        let hora = document.querySelector("#idSelectHoraFiltro");
+        let nombreCli = document.querySelector("#idNombreFiltro");
+        let apCli = document.querySelector("#idApellidoFiltro");
+        let resultado = arregloTurnos;
+        resultado = buscarPorFecha(resultado, fecha.value);
         console.log(resultado.length);
-        if (barbero.value!="vacio")
-            resultado=buscarPorBarbero(resultado,barbero.value);
-        if (hora.value!="vacio")
-            resultado=buscarPorHora(resultado,hora.value);
-        if (nombreCli.value!="")
-            resultado=buscarPorNombreCliente(resultado,nombreCli.value);
-        if (apCli.value!="")
-            resultado=buscarPorApellidoCliente(resultado,apCli.value);
+        if (barbero.value != "vacio")
+            resultado = buscarPorBarbero(resultado, barbero.value);
+        if (hora.value != "vacio")
+            resultado = buscarPorHora(resultado, hora.value);
+        if (nombreCli.value != "")
+            resultado = buscarPorNombreCliente(resultado, nombreCli.value);
+        if (apCli.value != "")
+            resultado = buscarPorApellidoCliente(resultado, apCli.value);
 
         cargarTablaAdmin(resultado);
     }
@@ -582,13 +647,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function existeTurno(arreglo, turno) {
-        let existe = false;
-        let id=-1;
+        let id = -1;
         let i = 0;
-        while ((i < arreglo.length) && (id==-1)) {
+        while ((i < arreglo.length) && (id == -1)) {
             if (arreglo[i].barbero == turno.barbero && arreglo[i].fecha == turno.fecha &&
                 arreglo[i].hora == turno.hora)
-                id=arreglo[i].id;
+                id = arreglo[i].id;
             i++;
         }
         return id;
@@ -633,7 +697,7 @@ document.addEventListener("DOMContentLoaded", function () {
         boton.textContent = texto;
         boton.addEventListener("click", function () {
             idTurno = boton.id;
-            editarTurno(boton.id, arTurnos);
+            editarTurno(arTurnos);
         });
         return boton;
     }
@@ -644,7 +708,7 @@ document.addEventListener("DOMContentLoaded", function () {
      * @param {*} id El id del turno que se desea modificar
      * @param {*} arTurnos Arreglo de objetos json con todos los turnos que tenemos cargados en la tabla
      */
-    function editarTurno(id, arTurnos) {
+    function editarTurno(arTurnos) {
         let turno = buscarTurno(idTurno, arTurnos);
         if (turno != undefined) {
             document.querySelector("#idNombre").value = turno.cliente.nombre;
@@ -691,7 +755,16 @@ document.addEventListener("DOMContentLoaded", function () {
         res.then(() => {
             cancelarOperacion();
             let filtro = armarFiltro("", "fecha", fecha);
-            renderTablaAdmin(url, "turno", filtro);
+            renderTablaAdmin(url, "turno", filtro, 1).then((turnos) => {
+                arregloTurnos = turnos;
+                document.querySelector("#idBtnAnterior").disabled = true;
+                let btnSig = document.querySelector("#idBtnSiguiente");
+                pagina = 1;
+                if (arregloTurnos.length < 5)
+                    btnSig.disabled = true;
+                else
+                    btnSig.disabled = false;
+            });
         });
     }
 
@@ -714,12 +787,19 @@ document.addEventListener("DOMContentLoaded", function () {
         filtroBusqueda = armarFiltro(filtroBusqueda, "hora", turno.hora);
         let turnoExiste = obtenerDatos(url, "turno", filtroBusqueda);
         turnoExiste.then((turnoRes) => {
-            let idAux=existeTurno(turnoRes, turno);
-            if (idAux==-1||idAux==turno.id) {
+            let idAux = existeTurno(turnoRes, turno);
+            if (idAux == -1 || idAux == turno.id) {
                 let res = modificarDatoEnAPI(url, "turno", turno);
                 res.then(() => {
                     let filtro = armarFiltro("", "fecha", turno.fecha);
-                    renderTablaAdmin(url, "turno", filtro);
+                    renderTablaAdmin(url, "turno", filtro, pagina).then((turnos) => {
+                        arregloTurnos = turnos;
+                        let btnSig = document.querySelector("#idBtnSiguiente");
+                        if (arregloTurnos.length < 5)
+                            btnSig.disabled = true;
+                        else
+                            btnSig.disabled = false;
+                    });
                     cancelarOperacion();
                 });
             }
@@ -909,5 +989,5 @@ document.addEventListener("DOMContentLoaded", function () {
             generarCaptcha();
         }
     }
-    
+
 });
