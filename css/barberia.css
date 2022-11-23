@@ -395,7 +395,6 @@ tbody tr .celdaDisponible:hover {
 }
 
 
-
 #idFormulario{
     margin-top: 5%;
     margin-bottom: 5%;
@@ -435,13 +434,16 @@ tbody tr .celdaDisponible:hover {
 
 .button-sesion{
     margin: 20px 0;
-    flex-direction: column;
-    text-align: center;
+    display: grid;
+    justify-content: space-around;
+    justify-items: start;
 }
 .button-sesion button{
     font-family: var(--letraPincipal);
-    padding: 5px 5px;
-
+    padding: 10px;
+    background-color: #fff;
+    border: none;
+    text-decoration: underline;
 }
 #idFormularioAdmin{
     margin: 5px 0px;
@@ -486,14 +488,38 @@ tbody tr .celdaDisponible:hover {
 }
 
 .divFiltrado{
+
     margin-top: 5px;
     border-top: 2px solid rgb(66, 63, 63);
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    padding-top: 5px;
+    font-family: var(--letraPincipal);
     
 }
 
+.navegaPagina{
+    text-align: center;
+}
+
+.section-tabla{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.navegaPagina button img{
+    width: 20px;
+    height: 20px;
+}
+
+tbody tr button{
+    border:none;
+    background-color: #fff;
+}
+tbody tr button img{
+    width: 20px;
+}
 /*CAPTCHA y RESUMEN DEL TURNO*/
 
 .captcha{

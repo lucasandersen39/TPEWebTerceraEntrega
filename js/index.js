@@ -645,7 +645,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 resultado.push(arreglo[i]);
         return resultado;
     }
+    
 
+
+    
     function existeTurno(arreglo, turno) {
         let id = -1;
         let i = 0;
@@ -687,14 +690,16 @@ document.addEventListener("DOMContentLoaded", function () {
         fila.appendChild(crearColumnaAdmin(turno.barbero));
         fila.appendChild(crearColumnaAdmin(armarFecha(turno.fecha)));
         fila.appendChild(crearColumnaAdmin(turno.hora));
-        fila.appendChild(crearBoton("Editar", turno.id, arTurnos));
+        fila.appendChild(crearBoton( turno.id, arTurnos));
         bodyAdmin.appendChild(fila);
     }
 
-    function crearBoton(texto, id, arTurnos) {
+    function crearBoton( id, arTurnos) {
         let boton = document.createElement("button");
+        let imgBoton=document.createElement("img");
+        imgBoton.src="img/editar.png";
         boton.id = id;
-        boton.textContent = texto;
+        boton.appendChild(imgBoton);
         boton.addEventListener("click", function () {
             idTurno = boton.id;
             editarTurno(arTurnos);
